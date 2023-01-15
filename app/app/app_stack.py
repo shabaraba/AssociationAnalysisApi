@@ -14,15 +14,27 @@ class AssociationAnalysisApiStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # The code that defines your stack goes here
-        my_lambda = _lambda.Function(
+        my_lambda = _lambda.DockerImageFunction(
             self, 'AssociationAnalysisLambda',
             description='アソシエーション分析をするためのlambda',
-            runtime=_lambda.Runtime.PYTHON_3_7,
-            code=_lambda.Code.from_asset('lambda'),
-            handler='association_analyze.handler',
+            code=_lambda.DockerImageCode.from_image_asset('lambda'),
         )
+        # lambda_layer = _lambda.LayerVersion(
+        #     self, "LambdaLayerLayer",
+        #     compatible_runtimes=[_lambda.Runtime.PYTHON_3_7],
+        #     code=_lambda.AssetCode("lambda_layer"),
+        # )
+        # my_lambda = _lambda.Function(
+        #     self, 'AssociationAnalysisLambda',
+        #     description='アソシエーション分析をするためのlambda',
+        #     runtime=_lambda.Runtime.PYTHON_3_7,
+        #     code=_lambda.Code.from_asset('lambda'),
+        #     layers=[lambda_layer],
+        #     handler='association_analyze.handler',
+        # )
         # create API Gateway
-        api = _apigateway.LambdaRestApi(self, 'AssociationAnalysisApiGateway', handler=my_lambda,proxy=False)
+        api = _apigateway.LambdaRestApi(
+            self, 'AssociationAnalysisApiGateway', handler=my_lambda, proxy=False)
         analysis_api = api.root.add_resource('analyze')
         analysis_api.add_method('POST')
         # item = items.add_resource("{item}")

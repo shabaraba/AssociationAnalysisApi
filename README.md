@@ -5,4 +5,5 @@
 1. cd app
 1. source .venv/bin/activate
 1. pip install -r requirements.txt
+1. pip install -r requirements.txt -t lambda_layer/python/
 1. ../node_modules/aws-cdk/bin/cdk bootstrap aws://<account ID>/<region name>

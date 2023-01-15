@@ -1,12 +1,15 @@
 import pandas as pd
 import json
-from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori
-from mlxtend.frequent_patterns import association_rules
-from IPython.display import display
+from libs import TransactionEncoder
+from libs import apriori
+from libs import association_rules
 
 
 def handler(event, context):
+    print('event:')
+    print(event)
+    print('context:')
+    print(context)
     request = {
         'data': [
             ['aaa', 'bbb', 'ccc'],
