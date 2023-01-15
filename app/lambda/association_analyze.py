@@ -49,7 +49,7 @@ def handler(event, context):
         (df_rules['lift'] > 1.0)  # リフト値
     ]
     print(results.loc[:,["antecedents","consequents","confidence","lift"]])
-    print(results.to_json())
+    print(results.T.to_json())
 
     response = {'resp': 'hello!'}
 
