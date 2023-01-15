@@ -7,6 +7,10 @@ from IPython.display import display
 
 
 def handler(event, context):
+    print('event:')
+    print(event)
+    print('context:')
+    print(context)
     request = {
         'data': [
             ['aaa', 'bbb', 'ccc'],
