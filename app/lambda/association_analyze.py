@@ -3,7 +3,6 @@ import json
 from packages.mlxtend.preprocessing import TransactionEncoder
 from packages.mlxtend.frequent_patterns import apriori
 from packages.mlxtend.frequent_patterns import association_rules
-from packages.IPython.display import display
 
 
 def handler(event, context):
