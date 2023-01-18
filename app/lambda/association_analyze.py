@@ -1,8 +1,8 @@
-import packages.pandas as pd
+import pandas as pd
 import json
-from packages.mlxtend.preprocessing import TransactionEncoder
-from packages.mlxtend.frequent_patterns import apriori
-from packages.mlxtend.frequent_patterns import association_rules
+from libs import TransactionEncoder
+from libs import apriori
+from libs import association_rules
 
 
 def handler(event, context):
