@@ -52,12 +52,8 @@ def handler(event, context):
         (df_rules['lift'] > 1.0)  # リフト値
     ]
     print(results.loc[:,["antecedents","consequents","confidence","lift"]])
-    print(results.T.to_json())
-
-    response = {'resp': 'hello!'}
-
-    # TODO:
-    # df = pd.read_json(response)
+    response = results.T.to_json()
+    print(response)
 
     return {
         'statusCode': 200,
