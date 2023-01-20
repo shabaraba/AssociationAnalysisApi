@@ -1,10 +1,10 @@
 from aws_cdk import (
-    # Duration,
+    Duration,
     Stack,
     aws_lambda as _lambda,
     aws_apigateway as _apigateway,
-    # aws_sqs as sqs,
 )
+
 from constructs import Construct
 
 
@@ -17,7 +17,8 @@ class AssociationAnalysisApiStack(Stack):
         my_lambda = _lambda.DockerImageFunction(
             self, 'AssociationAnalysisLambda',
             description='アソシエーション分析をするためのlambda',
-            code=_lambda.DockerImageCode.from_image_asset('lambda'),
+            code= _lambda.DockerImageCode.from_image_asset('lambda'),
+            timeout= Duration.seconds(60 * 5)
         )
         # lambda_layer = _lambda.LayerVersion(
         #     self, "LambdaLayerLayer",
