@@ -25,7 +25,8 @@ def handler(event, context):
                 }
             }
     """
-    request = event.get("body")
+    print(event)
+    request = json.loads(event.get("body"))
     print(request)
 
     transactions = request.get('data')
@@ -40,12 +41,12 @@ def handler(event, context):
 
     # itemsets・support算出
     freq_items = apriori(
-        df,                                            # データフレーム
-        min_support=request.get("min_support", 0.01),  # 支持度(support)の最小値
-        use_colnames=True,                             # 出力値のカラムに購入商品名を表示
-        max_len=None,                                  # 生成されるitemsetsの個数
-        verbose=1,                                     # low_memory=Trueの場合のイテレーション数
-        low_memory=True,                               # メモリ制限あり＆大規模なデータセット利用時に有効
+        df,                                                # データフレーム
+        min_support=float(request.get("min_support", 0.01)), # 支持度(support)の最小値
+        use_colnames=True,                                 # 出力値のカラムに購入商品名を表示
+        max_len=None,                                      # 生成されるitemsetsの個数
+        verbose=1,                                         # low_memory=Trueの場合のイテレーション数
+        low_memory=True,                                   # メモリ制限あり＆大規模なデータセット利用時に有効
     )
     sorted_freq_items = freq_items.sort_values(
         "support", ascending=False).reset_index(drop=True)
@@ -56,24 +57,41 @@ def handler(event, context):
     df_rules = association_rules(
         sorted_freq_items,                            # supportとitemsetsを持つデータフレーム
         metric=rule.get("metric", "confidence"),      # アソシエーション・ルールの評価指標
-        min_threshold=rule.get("min_threshold", 0.1), # metricsの閾値
+        min_threshold=float(rule.get("min_threshold", 0.1)), # metricsの閾値
     )
     print (df_rules)
 
     condition = request.get("condition")
     results = df_rules[
-        (df_rules['confidence'] > condition.get("confidence", 0.2)) &  # 信頼度
-        (df_rules['lift'] > condition.get("lift", 1.0))  # リフト値
+        (df_rules['confidence'] > float(condition.get("confidence", 0.2))) &  # 信頼度
+        (df_rules['lift'] > float(condition.get("lift", 1.0)))  # リフト値
     ]
     print(results.loc[:,["antecedents","consequents","confidence","lift"]])
-    response = results.T.to_json(index=False) # index=Falseで、添字がjsonに乗ることを防ぐ
-    print(response)
+    response = json.loads(results.to_json(orient="table")).get("data")
+    print(json.dumps(response))
 
     return {
         'statusCode': 200,
-        'body': response,
+        'body': json.dumps(response),
     }
 
 
 if __name__ == '__main__':
-    handler(event='', context='')
+    handler(event={
+        "body": json.dumps({
+            "data": [
+                ["aaa", "bbb", "ccc"],
+                ["aaa", "ccc"],
+                ["bbb"]
+            ],
+            "min_support": 0.01,
+            "rule": {
+                "metric": "confidence",
+                "min_threshold": "0.1"
+            },
+            "condition": {
+                "confidence": 0.2,
+                "lift": 1.0
+            }
+        })
+    }, context='')
