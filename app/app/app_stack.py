@@ -35,7 +35,7 @@ class AssociationAnalysisApiStack(Stack):
         # )
         # create API Gateway
         api = _apigateway.LambdaRestApi(
-            self, 'AssociationAnalysisApiGateway', handler=my_lambda, proxy=False)
+            self, 'AssociationAnalysisApiGateway', handler=my_lambda, proxy=True)
         analysis_api = api.root.add_resource('analyze')
         analysis_api.add_method('POST')
         # item = items.add_resource("{item}")
